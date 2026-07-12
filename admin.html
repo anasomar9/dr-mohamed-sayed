@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم لالي</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --ink: #0d0c0a;
+  --ink-soft: #16140f;
+  --panel: #1b1812;
+  --panel-2: #211d15;
+  --panel-line: #2c271c;
+  --cream: #f4ecdb;
+  --cream-dim: #a89d84;
+  --gold: #c9a24b;
+  --gold-bright: #eccf85;
+  --gold-dim: #8a712f;
+  --emerald: #1e3a2f;
+  --emerald-bright: #3e7a5e;
+  --rose: #9a4444;
+  --rose-bright: #d98484;
+  --font-display: 'Aref Ruqaa', serif;
+  --font-body: 'Tajawal', sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--ink); color: var(--cream); font-family: var(--font-body);
+  direction: rtl;
+}
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font-family: inherit; }
+h1,h2,h3,h4 { font-family: var(--font-display); margin: 0; }
+
+/* ---------- Login ---------- */
+.login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.login-screen::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 30% 20%, rgba(62,122,94,.15), transparent 50%), radial-gradient(circle at 80% 80%, rgba(201,162,75,.1), transparent 50%);
+}
+.login-card {
+  position: relative; z-index: 1;
+  width: 400px; background: var(--panel); border: 1px solid var(--panel-line); padding: 40px;
+}
+.login-card h1 { text-align: center; font-size: 32px; color: var(--gold-bright); margin-bottom: 6px; }
+.login-card p.sub { text-align:center; color: var(--cream-dim); font-size: 13px; margin-bottom: 30px; }
+.field { margin-bottom: 18px; }
+.field label { display:block; font-size:13px; color: var(--gold); margin-bottom:8px; }
+.field input, .field select, .field textarea {
+  width:100%; padding:12px 14px; background: var(--panel-2); border:1px solid var(--panel-line); color: var(--cream); font-size:14px;
+}
+.field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color: var(--gold); }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 22px; border:1px solid var(--gold); background: var(--gold); color: var(--ink); font-weight:700; font-size:14px; transition: all .2s; }
+.btn:hover { background: var(--gold-bright); }
+.btn-block { width: 100%; }
+.btn-ghost { background: transparent; color: var(--gold-bright); border-color: var(--panel-line); }
+.btn-ghost:hover { border-color: var(--gold); }
+.btn-danger { border-color: var(--rose); background: transparent; color: var(--rose-bright); }
+.btn-danger:hover { background: rgba(154,68,68,.15); }
+.btn-sm { padding: 8px 14px; font-size: 12px; }
+
+/* ---------- Shell ---------- */
+.shell { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 250px; background: var(--ink-soft); border-left: 1px solid var(--panel-line);
+  padding: 26px 18px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
+}
+.sidebar .brand { font-family: var(--font-display); font-size: 24px; color: var(--gold-bright); padding: 0 10px 26px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 3px;
+  color: var(--cream-dim); font-size: 14px; cursor: pointer; transition: all .2s; position: relative;
+}
+.nav-item:hover { background: var(--panel); color: var(--cream); }
+.nav-item.active { background: var(--panel); color: var(--gold-bright); }
+.nav-item.active::before { content:''; position:absolute; right:0; top:8px; bottom:8px; width:3px; background: var(--gold); }
+.nav-item .badge { margin-right: auto; background: var(--rose); color: #fff; font-size: 11px; padding: 1px 7px; border-radius: 20px; }
+.sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--panel-line); font-size: 13px; color: var(--cream-dim); }
+.sidebar-footer .who { color: var(--cream); margin-bottom: 10px; }
+
+.main { flex: 1; min-width: 0; }
+.topbar { height: 70px; border-bottom: 1px solid var(--panel-line); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+.topbar h2 { font-size: 22px; color: var(--cream); }
+.content { padding: 30px; }
+
+/* ---------- Cards / stats ---------- */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 30px; }
+.stat-card { background: var(--panel); border: 1px solid var(--panel-line); padding: 22px; position: relative; overflow: hidden; }
+.stat-card .label { font-size: 13px; color: var(--cream-dim); margin-bottom: 10px; }
+.stat-card .value { font-size: 30px; font-weight: 800; color: var(--gold-bright); font-family: var(--font-body); }
+.stat-card .accent { position:absolute; bottom:-16px; left:-16px; width:70px; height:70px; border-radius:50%; background: var(--emerald-bright); opacity:.12; }
+
+.panel { background: var(--panel); border: 1px solid var(--panel-line); }
+.panel-head { padding: 18px 22px; border-bottom: 1px solid var(--panel-line); display: flex; justify-content: space-between; align-items: center; }
+.panel-head h3 { font-size: 18px; color: var(--cream); font-family: var(--font-body); font-weight: 700; }
+.panel-body { padding: 22px; }
+
+/* ---------- Table ---------- */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: right; color: var(--gold); font-weight: 600; font-size: 12px; letter-spacing: .5px; padding: 12px 14px; border-bottom: 1px solid var(--panel-line); }
+td { padding: 14px; border-bottom: 1px solid var(--panel-line); color: var(--cream); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.02); }
+.table-scroll { overflow-x: auto; }
+
+.pill { display:inline-block; padding: 4px 12px; border-radius: 30px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.pill.amber { background: rgba(201,162,75,.15); color: var(--gold-bright); }
+.pill.emerald { background: rgba(62,122,94,.2); color: var(--emerald-bright); }
+.pill.gold { background: rgba(201,162,75,.15); color: var(--gold-bright); }
+.pill.rose { background: rgba(154,68,68,.2); color: var(--rose-bright); }
+.pill.ink { background: rgba(244,236,219,.08); color: var(--cream-dim); }
+.pill.admin { background: rgba(201,162,75,.2); color: var(--gold-bright); }
+.pill.employee { background: rgba(244,236,219,.08); color: var(--cream-dim); }
+
+.thumb-sm { width: 42px; height: 42px; object-fit: cover; border: 1px solid var(--panel-line); }
+
+/* ---------- Forms / modal ---------- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { width: min(560px, 100%); max-height: 88vh; overflow-y: auto; background: var(--panel); border: 1px solid var(--panel-line); }
+.modal-head { padding: 20px 24px; border-bottom: 1px solid var(--panel-line); display: flex; justify-content: space-between; align-items: center; }
+.modal-head h3 { font-size: 20px; color: var(--cream); }
+.modal-body { padding: 24px; }
+.modal-foot { padding: 18px 24px; border-top: 1px solid var(--panel-line); display: flex; gap: 10px; justify-content: left; }
+.close-x { background: none; border: none; color: var(--cream-dim); font-size: 18px; cursor: pointer; }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.subsection { border: 1px dashed var(--panel-line); padding: 16px; margin-top: 16px; }
+.subsection-title { font-size: 13px; color: var(--gold); margin-bottom: 12px; display:flex; justify-content: space-between; align-items:center; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--cream-dim); }
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.toolbar input, .toolbar select { padding: 10px 14px; background: var(--panel); border: 1px solid var(--panel-line); color: var(--cream); font-size: 13px; }
+
+#toast-host { position: fixed; bottom: 24px; left: 24px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: var(--panel-2); border: 1px solid var(--gold-dim); color: var(--cream); padding: 14px 20px; font-size: 14px; }
+
+.proof-thumb { width: 100%; max-height: 280px; object-fit: contain; border: 1px solid var(--panel-line); background: var(--ink); }
+
+@media (max-width: 900px) {
+  .sidebar { position: fixed; right: 0; top: 0; bottom: 0; z-index: 60; transform: translateX(100%); transition: transform .3s; }
+  .sidebar.open { transform: translateX(0); }
+  .row-2 { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ======================= شاشة تسجيل الدخول ======================= -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <h1>لالي</h1>
+    <p class="sub">لوحة تحكم المتجر</p>
+    <div id="login-alert"></div>
+    <form id="login-form">
+      <div class="field">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="l-email" required>
+      </div>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input type="password" id="l-password" required>
+      </div>
+      <button class="btn btn-block" type="submit" id="login-btn">تسجيل الدخول</button>
+    </form>
+  </div>
+</div>
+
+<!-- ======================= لوحة التحكم ======================= -->
+<div class="shell" id="dashboard-shell" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">لالي</div>
+    <div class="nav-item active" data-section="dashboard">📊 لوحة الإحصائيات</div>
+    <div class="nav-item" data-section="products">🧴 المنتجات</div>
+    <div class="nav-item" data-section="orders">📦 الطلبات <span class="badge" id="orders-badge" style="display:none"></span></div>
+    <div class="nav-item" data-section="customers">👥 العملاء</div>
+    <div class="nav-item" data-section="branches">🏬 الفروع</div>
+    <div class="nav-item" data-section="staff">🔑 الموظفون والصلاحيات</div>
+    <div class="nav-item" data-section="notifications">🔔 الإشعارات <span class="badge" id="notif-badge" style="display:none"></span></div>
+    <div class="nav-item" data-section="activity">📜 سجل النشاط</div>
+    <div class="sidebar-footer">
+      <div class="who" id="who-label">...</div>
+      <button class="btn btn-ghost btn-block btn-sm" onclick="signOutStaff()">تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2 id="section-title">لوحة الإحصائيات</h2>
+      <button class="btn btn-ghost btn-sm" id="mobile-nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ القائمة</button>
+    </div>
+    <div class="content" id="content">
+      <div class="empty-state">جاري التحميل...</div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-host"></div>
+<div id="toast-host"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+
+// ============================================================================
+// إعدادات الاتصال بـ Supabase — نفس بيانات ملف المتجر (عدّليها هنا أيضًا بنفس القيم)
+// ============================================================================
+const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const BUCKET_PRODUCT_IMAGES = 'product-images';
+const BUCKET_PAYMENT_PROOFS = 'payment-proofs';
+
+const PAYMENT_METHODS = {
+  vodafone_cash: { label: 'فودافون كاش', instructions: 'حوّل المبلغ على رقم 01000000000 ثم ارفع صورة تأكيد التحويل.' },
+  instapay: { label: 'إنستاباي', instructions: 'حوّل المبلغ عبر إنستاباي إلى الحساب: store@instapay ثم ارفع صورة تأكيد التحويل.' }
+};
+
+const ORDER_STATUS = {
+  pending_payment_review: { label: 'في انتظار مراجعة الدفع', tone: 'amber' },
+  payment_confirmed:      { label: 'تم تأكيد الدفع',        tone: 'emerald' },
+  preparing:               { label: 'جاري التجهيز',          tone: 'gold' },
+  ready_for_pickup:        { label: 'جاهز للاستلام',         tone: 'emerald' },
+  picked_up:                { label: 'تم الاستلام',           tone: 'ink' },
+  payment_rejected:         { label: 'تم رفض الدفع',          tone: 'rose' },
+  cancelled:                 { label: 'تم إلغاء الطلب',        tone: 'rose' }
+};
+
+const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1b1812"/><text x="100" y="105" font-family="Tajawal, sans-serif" font-size="14" fill="#8a712f" text-anchor="middle">لا توجد صورة</text></svg>'
+);
+
+// ============================================================================
+// المصادقة — تُدار داخل نفس الصفحة (بدون تنقّل بين ملفات)
+// ============================================================================
+let CURRENT_STAFF = null;
+
+function showLoginScreen() {
+  document.getElementById('dashboard-shell').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function showDashboardShell() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard-shell').style.display = 'flex';
+}
+
+async function logAction(action, entityType, entityId, details) {
+  if (!CURRENT_STAFF) return;
+  await supabaseClient.from('activity_log').insert({
+    staff_id: CURRENT_STAFF.id, staff_name: CURRENT_STAFF.full_name,
+    action, entity_type: entityType, entity_id: entityId || null, details: details || null
+  });
+}
+
+async function signOutStaff() {
+  await supabaseClient.auth.signOut();
+  CURRENT_STAFF = null;
+  showLoginScreen();
+}
+
+// تحقق من الجلسة الحالية عند فتح الصفحة (لو المستخدم مسجّل دخول من قبل)
+async function checkExistingSession() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { showLoginScreen(); return; }
+
+  const { data: staff, error } = await supabaseClient.from('staff').select('*, branches(name)').eq('id', session.user.id).single();
+  if (error || !staff || !staff.is_active) {
+    await supabaseClient.auth.signOut();
+    showLoginScreen();
+    return;
+  }
+  CURRENT_STAFF = staff;
+  showDashboardShell();
+  initAdminApp(staff);
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const alertBox = document.getElementById('login-alert');
+  const btn = document.getElementById('login-btn');
+  alertBox.innerHTML = '';
+  btn.setAttribute('disabled', 'true');
+  btn.textContent = 'جاري الدخول...';
+
+  const email = document.getElementById('l-email').value.trim();
+  const password = document.getElementById('l-password').value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) {
+    alertBox.innerHTML = `<div class="alert" style="background:rgba(154,68,68,.15);color:#d98484;padding:12px;margin-bottom:16px;font-size:13px">تعذّر تسجيل الدخول: ${error.message}</div>`;
+    btn.removeAttribute('disabled'); btn.textContent = 'تسجيل الدخول';
+    return;
+  }
+
+  const { data: staff, error: staffErr } = await supabaseClient.from('staff').select('*, branches(name)').eq('id', data.user.id).single();
+  if (staffErr || !staff || !staff.is_active) {
+    await supabaseClient.auth.signOut();
+    alertBox.innerHTML = `<div class="alert" style="background:rgba(154,68,68,.15);color:#d98484;padding:12px;margin-bottom:16px;font-size:13px">هذا الحساب غير مصرّح له بالدخول للوحة التحكم.</div>`;
+    btn.removeAttribute('disabled'); btn.textContent = 'تسجيل الدخول';
+    return;
+  }
+
+  CURRENT_STAFF = staff;
+  document.getElementById('login-form').reset();
+  btn.removeAttribute('disabled'); btn.textContent = 'تسجيل الدخول';
+  showDashboardShell();
+  initAdminApp(staff);
+});
+
+// ============================================================================
+// أدوات مساعدة للوحة (نوافذ منبثقة، تنسيق، تنبيهات)
+// ============================================================================
+// ============================================================================
+// أدوات مساعدة مشتركة للوحة التحكم
+// ============================================================================
+function fmtPrice(n) { return Number(n || 0).toLocaleString('ar-EG') + ' ج.م'; }
+function fmtDate(d) { return new Date(d).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }); }
+
+function showToast(msg) {
+  let host = document.getElementById('toast-host');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  host.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+function openModal(title, bodyHtml, footHtml) {
+  const host = document.getElementById('modal-host');
+  host.innerHTML = `
+    <div class="modal-overlay" id="active-modal-overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>${title}</h3>
+          <button class="close-x" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">${bodyHtml}</div>
+        ${footHtml ? `<div class="modal-foot">${footHtml}</div>` : ''}
+      </div>
+    </div>
+  `;
+  document.getElementById('active-modal-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'active-modal-overlay') closeModal();
+  });
+}
+function closeModal() { document.getElementById('modal-host').innerHTML = ''; }
+
+function statusPillHtml(status) {
+  const s = ORDER_STATUS[status] || { label: status, tone: 'ink' };
+  return `<span class="pill ${s.tone}">${s.label}</span>`;
+}
+
+
+// ============================================================================
+// دوال عرض أقسام لوحة التحكم (منتجات، طلبات، عملاء، فروع، موظفون، إشعارات، سجل نشاط)
+// ============================================================================
+// ============================================================================
+// دوال عرض أقسام لوحة التحكم
+// ============================================================================
+const content = () => document.getElementById('content');
+
+// ---------------------------------------------------------------------------
+// 1) لوحة الإحصائيات
+// ---------------------------------------------------------------------------
+async function renderDashboard() {
+  content().innerHTML = `<div class="empty-state">جاري تحميل الإحصائيات...</div>`;
+
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+
+  const [{ count: pendingCount }, { count: todayOrders }, { data: confirmedOrders }, { data: lowStock }, { data: recentOrders }] = await Promise.all([
+    supabaseClient.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'pending_payment_review'),
+    supabaseClient.from('orders').select('*', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString()),
+    supabaseClient.from('orders').select('total').in('status', ['payment_confirmed','preparing','ready_for_pickup','picked_up']),
+    supabaseClient.from('product_sizes').select('id, label, stock_quantity, low_stock_threshold, product_variants(name, products(name))').lte('stock_quantity', 5).eq('is_active', true),
+    supabaseClient.from('orders').select('order_number, status, total, created_at, customers(full_name)').order('created_at', { ascending: false }).limit(6)
+  ]);
+
+  const revenue = (confirmedOrders || []).reduce((s, o) => s + Number(o.total), 0);
+
+  content().innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="accent"></div><div class="label">طلبات في انتظار مراجعة الدفع</div><div class="value">${pendingCount || 0}</div></div>
+      <div class="stat-card"><div class="accent"></div><div class="label">طلبات اليوم</div><div class="value">${todayOrders || 0}</div></div>
+      <div class="stat-card"><div class="accent"></div><div class="label">إجمالي الإيرادات المؤكدة</div><div class="value">${fmtPrice(revenue)}</div></div>
+      <div class="stat-card"><div class="accent"></div><div class="label">أصناف منخفضة المخزون</div><div class="value">${(lowStock||[]).length}</div></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:22px">
+      <div class="panel-head"><h3>أحدث الطلبات</h3><span class="pill ink" onclick="switchSection('orders')" style="cursor:pointer">عرض الكل</span></div>
+      <div class="table-scroll"><table>
+        <thead><tr><th>رقم الطلب</th><th>العميل</th><th>الحالة</th><th>الإجمالي</th><th>التاريخ</th></tr></thead>
+        <tbody>
+          ${(recentOrders||[]).map(o => `
+            <tr><td>${o.order_number}</td><td>${o.customers?.full_name || ''}</td><td>${statusPillHtml(o.status)}</td><td>${fmtPrice(o.total)}</td><td>${fmtDate(o.created_at)}</td></tr>
+          `).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--cream-dim)">لا توجد طلبات بعد</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>تنبيهات المخزون المنخفض</h3></div>
+      <div class="table-scroll"><table>
+        <thead><tr><th>المنتج</th><th>النوع</th><th>الحجم</th><th>الكمية المتبقية</th></tr></thead>
+        <tbody>
+          ${(lowStock||[]).map(s => `
+            <tr><td>${s.product_variants?.products?.name || ''}</td><td>${s.product_variants?.name || ''}</td><td>${s.label}</td><td style="color:var(--rose-bright)">${s.stock_quantity}</td></tr>
+          `).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--cream-dim)">لا يوجد نقص في المخزون حاليًا</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+// ---------------------------------------------------------------------------
+// 2) المنتجات
+// ---------------------------------------------------------------------------
+async function renderProducts() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+
+  const [{ data: products }, { data: categories }] = await Promise.all([
+    supabaseClient.from('products').select('*, categories(name), product_variants(id, product_sizes(id, stock_quantity))').order('created_at', { ascending: false }),
+    supabaseClient.from('categories').select('*').order('sort_order')
+  ]);
+  window.__categories = categories || [];
+
+  content().innerHTML = `
+    <div class="toolbar">
+      <button class="btn" onclick="openProductModal()">+ إضافة منتج جديد</button>
+    </div>
+    <div class="panel">
+      <div class="table-scroll"><table>
+        <thead><tr><th>الصورة</th><th>المنتج</th><th>التصنيف</th><th>عدد الأنواع</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          ${(products||[]).map(p => `
+            <tr>
+              <td><img class="thumb-sm" src="${p.cover_image_url || 'placeholder.svg'}"></td>
+              <td>${p.name}<br><small style="color:var(--cream-dim)">${p.brand||''}</small></td>
+              <td>${p.categories?.name || '—'}</td>
+              <td>${(p.product_variants||[]).length}</td>
+              <td>${p.is_active ? '<span class="pill emerald">فعّال</span>' : '<span class="pill ink">متوقف</span>'}</td>
+              <td style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="openVariantsModal('${p.id}','${encodeURIComponent(p.name)}')">الأنواع والأحجام</button>
+                <button class="btn btn-ghost btn-sm" onclick="openProductModal('${p.id}')">تعديل</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">حذف</button>
+              </td>
+            </tr>
+          `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--cream-dim)">لا توجد منتجات بعد</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+async function openProductModal(productId) {
+  let product = { name:'', brand:'', description:'', category_id:'', cover_image_url:'', is_active:true };
+  if (productId) {
+    const { data } = await supabaseClient.from('products').select('*').eq('id', productId).single();
+    product = data;
+  }
+  const catOptions = (window.__categories||[]).map(c => `<option value="${c.id}" ${product.category_id===c.id?'selected':''}>${c.name}</option>`).join('');
+
+  openModal(productId ? 'تعديل المنتج' : 'إضافة منتج جديد', `
+    <div class="field"><label>اسم المنتج</label><input id="p-name" value="${product.name||''}"></div>
+    <div class="row-2">
+      <div class="field"><label>الماركة</label><input id="p-brand" value="${product.brand||''}"></div>
+      <div class="field"><label>التصنيف</label><select id="p-category"><option value="">بدون</option>${catOptions}</select></div>
+    </div>
+    <div class="field"><label>الوصف</label><textarea id="p-desc" rows="3">${product.description||''}</textarea></div>
+    <div class="field"><label>صورة الغلاف</label><input type="file" id="p-image" accept="image/*">
+      ${product.cover_image_url ? `<img src="${product.cover_image_url}" style="max-height:100px;margin-top:8px">` : ''}
+    </div>
+    <div class="field"><label><input type="checkbox" id="p-active" ${product.is_active?'checked':''}> منتج فعّال (يظهر في المتجر)</label></div>
+  `, `
+    <button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+    <button class="btn" id="save-product-btn" onclick="saveProduct('${productId||''}')">حفظ</button>
+  `);
+}
+
+async function saveProduct(productId) {
+  const btn = document.getElementById('save-product-btn');
+  btn.setAttribute('disabled','true'); btn.textContent = 'جاري الحفظ...';
+
+  const payload = {
+    name: document.getElementById('p-name').value.trim(),
+    brand: document.getElementById('p-brand').value.trim(),
+    category_id: document.getElementById('p-category').value || null,
+    description: document.getElementById('p-desc').value.trim(),
+    is_active: document.getElementById('p-active').checked
+  };
+
+  const file = document.getElementById('p-image').files[0];
+  if (file) {
+    const path = `products/${Date.now()}-${file.name}`;
+    const { error: upErr } = await supabaseClient.storage.from(BUCKET_PRODUCT_IMAGES).upload(path, file);
+    if (!upErr) {
+      const { data: urlData } = supabaseClient.storage.from(BUCKET_PRODUCT_IMAGES).getPublicUrl(path);
+      payload.cover_image_url = urlData.publicUrl;
+    }
+  }
+
+  let error;
+  if (productId) {
+    ({ error } = await supabaseClient.from('products').update(payload).eq('id', productId));
+  } else {
+    ({ error } = await supabaseClient.from('products').insert(payload));
+  }
+
+  if (error) { showToast('حدث خطأ: ' + error.message); btn.removeAttribute('disabled'); btn.textContent='حفظ'; return; }
+  await logAction(productId ? 'تعديل منتج' : 'إضافة منتج', 'product', productId, payload);
+  showToast('تم الحفظ بنجاح'); closeModal(); renderProducts();
+}
+
+async function deleteProduct(id) {
+  if (!confirm('هل أنت متأكدة من حذف هذا المنتج؟ سيتم حذف كل الأنواع والأحجام المرتبطة به.')) return;
+  const { error } = await supabaseClient.from('products').delete().eq('id', id);
+  if (error) { showToast('حدث خطأ: ' + error.message); return; }
+  await logAction('حذف منتج', 'product', id);
+  showToast('تم الحذف'); renderProducts();
+}
+
+// ---- إدارة الأنواع والأحجام ----
+async function openVariantsModal(productId, productNameEnc) {
+  const productName = decodeURIComponent(productNameEnc);
+  const { data: variants } = await supabaseClient
+    .from('product_variants').select('*, product_sizes(*)').eq('product_id', productId).order('sort_order');
+
+  openModal(`الأنواع والأحجام — ${productName}`, `
+    <div id="variants-list">${(variants||[]).map(v => variantBlockHtml(v)).join('') || '<p style="color:var(--cream-dim)">لا توجد أنواع بعد.</p>'}</div>
+    <div class="subsection">
+      <div class="subsection-title">إضافة نوع جديد</div>
+      <div class="field" style="margin-bottom:10px"><input id="new-variant-name" placeholder="اسم النوع (مثال: لون بيج)"></div>
+      <button class="btn btn-sm" onclick="addVariant('${productId}','${productNameEnc}')">+ إضافة النوع</button>
+    </div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">إغلاق</button>`);
+}
+
+function variantBlockHtml(v) {
+  return `
+    <div class="subsection">
+      <div class="subsection-title"><span>${v.name}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteVariant('${v.id}', '${v.product_id}')">حذف النوع</button>
+      </div>
+      <table style="margin-bottom:10px">
+        <thead><tr><th>الحجم</th><th>السعر</th><th>الكمية</th><th></th></tr></thead>
+        <tbody>
+          ${(v.product_sizes||[]).map(s => `
+            <tr>
+              <td><input value="${s.label}" style="width:90px;background:transparent;border:1px solid var(--panel-line);color:var(--cream);padding:6px" id="size-label-${s.id}"></td>
+              <td><input type="number" value="${s.price}" style="width:80px;background:transparent;border:1px solid var(--panel-line);color:var(--cream);padding:6px" id="size-price-${s.id}"></td>
+              <td><input type="number" value="${s.stock_quantity}" style="width:70px;background:transparent;border:1px solid var(--panel-line);color:var(--cream);padding:6px" id="size-stock-${s.id}"></td>
+              <td style="display:flex;gap:6px">
+                <button class="btn btn-sm" onclick="updateSize('${s.id}','${v.product_id}')">حفظ</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteSize('${s.id}','${v.product_id}')">حذف</button>
+              </td>
+            </tr>
+          `).join('') || '<tr><td colspan="4" style="color:var(--cream-dim)">لا توجد أحجام</td></tr>'}
+        </tbody>
+      </table>
+      <div style="display:flex;gap:8px">
+        <input placeholder="حجم جديد (مثال: 50 مل)" id="new-size-label-${v.id}" style="flex:1">
+        <input type="number" placeholder="السعر" id="new-size-price-${v.id}" style="width:90px">
+        <input type="number" placeholder="الكمية" id="new-size-stock-${v.id}" style="width:80px">
+        <button class="btn btn-sm" onclick="addSize('${v.id}','${v.product_id}')">+ إضافة</button>
+      </div>
+    </div>
+  `;
+}
+
+async function addVariant(productId, productNameEnc) {
+  const name = document.getElementById('new-variant-name').value.trim();
+  if (!name) return;
+  const { error } = await supabaseClient.from('product_variants').insert({ product_id: productId, name });
+  if (error) { showToast('خطأ: ' + error.message); return; }
+  await logAction('إضافة نوع منتج', 'product_variant', null, { productId, name });
+  openVariantsModal(productId, productNameEnc);
+  renderProducts();
+}
+
+async function deleteVariant(variantId, productId) {
+  if (!confirm('حذف هذا النوع وكل أحجامه؟')) return;
+  await supabaseClient.from('product_variants').delete().eq('id', variantId);
+  await logAction('حذف نوع منتج', 'product_variant', variantId);
+  const { data: p } = await supabaseClient.from('products').select('name').eq('id', productId).single();
+  openVariantsModal(productId, encodeURIComponent(p?.name || ''));
+  renderProducts();
+}
+
+async function addSize(variantId, productId) {
+  const label = document.getElementById(`new-size-label-${variantId}`).value.trim();
+  const price = Number(document.getElementById(`new-size-price-${variantId}`).value);
+  const stock = Number(document.getElementById(`new-size-stock-${variantId}`).value);
+  if (!label || !price) { showToast('أدخلي الحجم والسعر على الأقل'); return; }
+
+  const { error } = await supabaseClient.from('product_sizes').insert({ variant_id: variantId, label, price, stock_quantity: stock || 0 });
+  if (error) { showToast('خطأ: ' + error.message); return; }
+  await logAction('إضافة حجم', 'product_size', null, { variantId, label, price });
+  const { data: p } = await supabaseClient.from('products').select('name').eq('id', productId).single();
+  openVariantsModal(productId, encodeURIComponent(p?.name || ''));
+  renderProducts();
+}
+
+async function updateSize(sizeId, productId) {
+  const label = document.getElementById(`size-label-${sizeId}`).value.trim();
+  const price = Number(document.getElementById(`size-price-${sizeId}`).value);
+  const stock = Number(document.getElementById(`size-stock-${sizeId}`).value);
+  const { error } = await supabaseClient.from('product_sizes').update({ label, price, stock_quantity: stock }).eq('id', sizeId);
+  if (error) { showToast('خطأ: ' + error.message); return; }
+  await logAction('تعديل حجم منتج', 'product_size', sizeId, { label, price, stock });
+  showToast('تم التحديث'); renderProducts();
+}
+
+async function deleteSize(sizeId, productId) {
+  if (!confirm('حذف هذا الحجم؟')) return;
+  await supabaseClient.from('product_sizes').delete().eq('id', sizeId);
+  await logAction('حذف حجم منتج', 'product_size', sizeId);
+  const { data: p } = await supabaseClient.from('products').select('name').eq('id', productId).single();
+  openVariantsModal(productId, encodeURIComponent(p?.name || ''));
+  renderProducts();
+}
+
+// ---------------------------------------------------------------------------
+// 3) الطلبات
+// ---------------------------------------------------------------------------
+let ORDERS_STATUS_FILTER = '';
+
+async function renderOrders() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+
+  let query = supabaseClient.from('orders').select('*, customers(full_name, phone), branches(name)').order('created_at', { ascending: false });
+  if (ORDERS_STATUS_FILTER) query = query.eq('status', ORDERS_STATUS_FILTER);
+  const { data: orders } = await query;
+
+  const statusOptions = Object.entries(ORDER_STATUS).map(([k,v]) => `<option value="${k}" ${ORDERS_STATUS_FILTER===k?'selected':''}>${v.label}</option>`).join('');
+
+  content().innerHTML = `
+    <div class="toolbar">
+      <select id="orders-filter" onchange="ORDERS_STATUS_FILTER=this.value; renderOrders()">
+        <option value="">كل الحالات</option>${statusOptions}
+      </select>
+    </div>
+    <div class="panel">
+      <div class="table-scroll"><table>
+        <thead><tr><th>رقم الطلب</th><th>العميل</th><th>الفرع</th><th>طريقة الدفع</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th><th></th></tr></thead>
+        <tbody>
+          ${(orders||[]).map(o => `
+            <tr>
+              <td>${o.order_number}</td>
+              <td>${o.customers?.full_name||''}<br><small style="color:var(--cream-dim)">${o.customers?.phone||''}</small></td>
+              <td>${o.branches?.name||''}</td>
+              <td>${PAYMENT_METHODS[o.payment_method]?.label || o.payment_method}</td>
+              <td>${fmtPrice(o.total)}</td>
+              <td>${statusPillHtml(o.status)}</td>
+              <td>${fmtDate(o.created_at)}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openOrderModal('${o.id}')">التفاصيل</button></td>
+            </tr>
+          `).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--cream-dim)">لا توجد طلبات</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+async function openOrderModal(orderId) {
+  const { data: order } = await supabaseClient
+    .from('orders').select('*, customers(full_name, phone), branches(name), order_items(*)').eq('id', orderId).single();
+  if (!order) return;
+
+  const itemsHtml = order.order_items.map(i => `
+    <tr><td>${i.product_name}</td><td>${i.variant_name} / ${i.size_label}</td><td>${i.quantity}</td><td>${fmtPrice(i.line_total)}</td></tr>
+  `).join('');
+
+  const statusFlow = {
+    pending_payment_review: [['payment_confirmed','قبول الدفع'],['payment_rejected','رفض الدفع']],
+    payment_confirmed: [['preparing','بدء التجهيز']],
+    preparing: [['ready_for_pickup','جاهز للاستلام']],
+    ready_for_pickup: [['picked_up','تم الاستلام']],
+    payment_rejected: [],
+    picked_up: [],
+    cancelled: []
+  };
+  const actions = statusFlow[order.status] || [];
+
+  openModal(`تفاصيل الطلب ${order.order_number}`, `
+    <div class="row-2" style="margin-bottom:16px">
+      <div><small style="color:var(--cream-dim)">العميل</small><br>${order.customers.full_name} — ${order.customers.phone}</div>
+      <div><small style="color:var(--cream-dim)">الفرع</small><br>${order.branches.name}</div>
+    </div>
+    <div style="margin-bottom:16px">${statusPillHtml(order.status)} &nbsp; ${PAYMENT_METHODS[order.payment_method]?.label||''}</div>
+
+    <table style="margin-bottom:16px">
+      <thead><tr><th>المنتج</th><th>النوع/الحجم</th><th>الكمية</th><th>الإجمالي</th></tr></thead>
+      <tbody>${itemsHtml}</tbody>
+    </table>
+    <div style="text-align:left;color:var(--gold-bright);font-weight:800;margin-bottom:16px">الإجمالي الكلي: ${fmtPrice(order.total)}</div>
+
+    ${order.payment_proof_url ? `<div style="margin-bottom:16px"><small style="color:var(--cream-dim)">إثبات الدفع</small><br><img class="proof-thumb" src="${order.payment_proof_url}"></div>` : ''}
+    ${order.rejection_reason ? `<div class="pill rose" style="display:block;margin-bottom:16px">سبب الرفض السابق: ${order.rejection_reason}</div>` : ''}
+
+    <div id="order-actions" style="display:flex;flex-wrap:wrap;gap:10px">
+      ${actions.map(([status,label]) => `<button class="btn ${status==='payment_rejected'?'btn-danger':''}" onclick="changeOrderStatus('${order.id}','${status}')">${label}</button>`).join('')}
+      ${order.status !== 'picked_up' && order.status !== 'cancelled' ? `<button class="btn btn-ghost" onclick="changeOrderStatus('${order.id}','cancelled')">إلغاء الطلب</button>` : ''}
+    </div>
+    <div id="rejection-reason-box" style="display:none;margin-top:14px">
+      <div class="field"><label>سبب رفض الدفع</label><textarea id="rejection-reason" rows="2"></textarea></div>
+      <button class="btn btn-danger" onclick="confirmRejectOrder('${order.id}')">تأكيد الرفض</button>
+    </div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">إغلاق</button>`);
+}
+
+function changeOrderStatus(orderId, status) {
+  if (status === 'payment_rejected') {
+    document.getElementById('rejection-reason-box').style.display = 'block';
+    return;
+  }
+  doOrderStatusUpdate(orderId, status);
+}
+
+async function confirmRejectOrder(orderId) {
+  const reason = document.getElementById('rejection-reason').value.trim();
+  if (!reason) { showToast('يرجى كتابة سبب الرفض'); return; }
+  doOrderStatusUpdate(orderId, 'payment_rejected', reason);
+}
+
+async function doOrderStatusUpdate(orderId, status, reason) {
+  const payload = { status };
+  if (reason) payload.rejection_reason = reason;
+  const { error } = await supabaseClient.from('orders').update(payload).eq('id', orderId);
+  if (error) { showToast('خطأ: ' + error.message); return; }
+  await logAction('تغيير حالة الطلب', 'order', orderId, { status, reason });
+  showToast('تم تحديث حالة الطلب');
+  closeModal();
+  renderOrders();
+}
+
+// ---------------------------------------------------------------------------
+// 4) العملاء
+// ---------------------------------------------------------------------------
+async function renderCustomers() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+  const { data: customers } = await supabaseClient
+    .from('customers').select('*, orders(id, total, status)').order('created_at', { ascending: false });
+
+  content().innerHTML = `
+    <div class="panel">
+      <div class="table-scroll"><table>
+        <thead><tr><th>الاسم</th><th>الهاتف</th><th>عدد الطلبات</th><th>إجمالي المشتريات</th><th>تاريخ التسجيل</th></tr></thead>
+        <tbody>
+          ${(customers||[]).map(c => {
+            const total = (c.orders||[]).filter(o=>['payment_confirmed','preparing','ready_for_pickup','picked_up'].includes(o.status)).reduce((s,o)=>s+Number(o.total),0);
+            return `<tr><td>${c.full_name}</td><td>${c.phone}</td><td>${(c.orders||[]).length}</td><td>${fmtPrice(total)}</td><td>${fmtDate(c.created_at)}</td></tr>`;
+          }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--cream-dim)">لا يوجد عملاء بعد</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+// ---------------------------------------------------------------------------
+// 5) الفروع
+// ---------------------------------------------------------------------------
+async function renderBranches() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+  const { data: branches } = await supabaseClient.from('branches').select('*').order('created_at');
+
+  content().innerHTML = `
+    <div class="toolbar"><button class="btn" onclick="openBranchModal()">+ إضافة فرع</button></div>
+    <div class="panel">
+      <div class="table-scroll"><table>
+        <thead><tr><th>اسم الفرع</th><th>العنوان</th><th>الهاتف</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          ${(branches||[]).map(b => `
+            <tr><td>${b.name}</td><td>${b.address||''}</td><td>${b.phone||''}</td>
+            <td>${b.is_active ? '<span class="pill emerald">فعّال</span>':'<span class="pill ink">متوقف</span>'}</td>
+            <td style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="openBranchModal('${b.id}')">تعديل</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteBranch('${b.id}')">حذف</button></td></tr>
+          `).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--cream-dim)">لا توجد فروع بعد</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+async function openBranchModal(id) {
+  let b = { name:'', address:'', phone:'', is_active:true };
+  if (id) { const { data } = await supabaseClient.from('branches').select('*').eq('id', id).single(); b = data; }
+  openModal(id ? 'تعديل فرع' : 'إضافة فرع', `
+    <div class="field"><label>اسم الفرع</label><input id="b-name" value="${b.name||''}"></div>
+    <div class="field"><label>العنوان</label><input id="b-address" value="${b.address||''}"></div>
+    <div class="field"><label>الهاتف</label><input id="b-phone" value="${b.phone||''}"></div>
+    <div class="field"><label><input type="checkbox" id="b-active" ${b.is_active?'checked':''}> فرع فعّال</label></div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="saveBranch('${id||''}')">حفظ</button>`);
+}
+
+async function saveBranch(id) {
+  const payload = {
+    name: document.getElementById('b-name').value.trim(),
+    address: document.getElementById('b-address').value.trim(),
+    phone: document.getElementById('b-phone').value.trim(),
+    is_active: document.getElementById('b-active').checked
+  };
+  let error;
+  if (id) ({ error } = await supabaseClient.from('branches').update(payload).eq('id', id));
+  else ({ error } = await supabaseClient.from('branches').insert(payload));
+  if (error) { showToast('خطأ: ' + error.message); return; }
+  await logAction(id ? 'تعديل فرع' : 'إضافة فرع', 'branch', id, payload);
+  showToast('تم الحفظ'); closeModal(); renderBranches();
+}
+
+async function deleteBranch(id) {
+  if (!confirm('حذف هذا الفرع؟')) return;
+  const { error } = await supabaseClient.from('branches').delete().eq('id', id);
+  if (error) { showToast('لا يمكن حذف فرع مرتبط بطلبات قائمة'); return; }
+  await logAction('حذف فرع', 'branch', id);
+  showToast('تم الحذف'); renderBranches();
+}
+
+// ---------------------------------------------------------------------------
+// 6) الموظفون والصلاحيات
+// ---------------------------------------------------------------------------
+async function renderStaffSection() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+  if (CURRENT_STAFF.role !== 'admin') {
+    content().innerHTML = `<div class="empty-state">هذا القسم متاح للمدير فقط.</div>`;
+    return;
+  }
+  const [{ data: staffList }, { data: branches }] = await Promise.all([
+    supabaseClient.from('staff').select('*, branches(name)').order('created_at'),
+    supabaseClient.from('branches').select('id, name')
+  ]);
+  window.__branches = branches || [];
+
+  content().innerHTML = `
+    <div class="toolbar">
+      <button class="btn" onclick="openStaffModal()">+ ربط حساب موظف جديد</button>
+    </div>
+    <p style="color:var(--cream-dim);font-size:13px;margin-bottom:18px">
+      لإضافة موظف جديد: أنشئي له حسابًا أولًا من Supabase Dashboard → Authentication → Users، ثم أدخلي معرّف المستخدم (UUID) هنا لربطه بدوره وفرعه.
+    </p>
+    <div class="panel">
+      <div class="table-scroll"><table>
+        <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الدور</th><th>الفرع</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          ${(staffList||[]).map(s => `
+            <tr><td>${s.full_name}</td><td>${s.email}</td>
+            <td><span class="pill ${s.role}">${s.role==='admin'?'مدير':'موظف'}</span></td>
+            <td>${s.branches?.name||'—'}</td>
+            <td>${s.is_active?'<span class="pill emerald">نشط</span>':'<span class="pill ink">موقوف</span>'}</td>
+            <td style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="openStaffModal('${s.id}')">تعديل</button></td></tr>
+          `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--cream-dim)">لا يوجد موظفون بعد</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+async function openStaffModal(id) {
+  let s = { id:'', full_name:'', email:'', role:'employee', branch_id:'', is_active:true };
+  if (id) { const { data } = await supabaseClient.from('staff').select('*').eq('id', id).single(); s = data; }
+  const branchOptions = (window.__branches||[]).map(b => `<option value="${b.id}" ${s.branch_id===b.id?'selected':''}>${b.name}</option>`).join('');
+
+  openModal(id ? 'تعديل بيانات الموظف' : 'ربط حساب موظف', `
+    ${!id ? `<div class="field"><label>معرّف المستخدم (UUID) من Supabase Auth</label><input id="s-id" placeholder="00000000-0000-0000-0000-000000000000"></div>` : ''}
+    <div class="field"><label>الاسم بالكامل</label><input id="s-name" value="${s.full_name||''}"></div>
+    <div class="field"><label>البريد الإلكتروني</label><input id="s-email" value="${s.email||''}"></div>
+    <div class="row-2">
+      <div class="field"><label>الدور</label><select id="s-role"><option value="employee" ${s.role==='employee'?'selected':''}>موظف</option><option value="admin" ${s.role==='admin'?'selected':''}>مدير</option></select></div>
+      <div class="field"><label>الفرع</label><select id="s-branch"><option value="">بدون تحديد</option>${branchOptions}</select></div>
+    </div>
+    <div class="field"><label><input type="checkbox" id="s-active" ${s.is_active?'checked':''}> حساب نشط</label></div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="saveStaff('${id||''}')">حفظ</button>`);
+}
+
+async function saveStaff(id) {
+  const payload = {
+    full_name: document.getElementById('s-name').value.trim(),
+    email: document.getElementById('s-email').value.trim(),
+    role: document.getElementById('s-role').value,
+    branch_id: document.getElementById('s-branch').value || null,
+    is_active: document.getElementById('s-active').checked
+  };
+  let error;
+  if (id) {
+    ({ error } = await supabaseClient.from('staff').update(payload).eq('id', id));
+  } else {
+    const uid = document.getElementById('s-id').value.trim();
+    if (!uid) { showToast('يرجى إدخال معرّف المستخدم'); return; }
+    payload.id = uid;
+    ({ error } = await supabaseClient.from('staff').insert(payload));
+  }
+  if (error) { showToast('خطأ: ' + error.message); return; }
+  await logAction(id ? 'تعديل موظف' : 'ربط موظف جديد', 'staff', id, payload);
+  showToast('تم الحفظ'); closeModal(); renderStaffSection();
+}
+
+// ---------------------------------------------------------------------------
+// 7) الإشعارات
+// ---------------------------------------------------------------------------
+async function renderNotifications() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+  const { data: notifs } = await supabaseClient.from('notifications').select('*').order('created_at', { ascending: false }).limit(60);
+
+  content().innerHTML = `
+    <div class="toolbar"><button class="btn btn-ghost btn-sm" onclick="markAllNotificationsRead()">تعليم الكل كمقروء</button></div>
+    <div class="panel">
+      ${(notifs||[]).map(n => `
+        <div class="panel-body" style="border-bottom:1px solid var(--panel-line);display:flex;justify-content:space-between;align-items:center;${n.is_read?'opacity:.55':''}">
+          <div>
+            <strong>${n.title}</strong><br><small style="color:var(--cream-dim)">${n.body||''} — ${fmtDate(n.created_at)}</small>
+          </div>
+          <div style="display:flex;gap:8px">
+            ${n.order_id ? `<button class="btn btn-ghost btn-sm" onclick="openOrderModal('${n.order_id}')">عرض الطلب</button>` : ''}
+            ${!n.is_read ? `<button class="btn btn-sm" onclick="markNotificationRead('${n.id}')">تعليم كمقروء</button>` : ''}
+          </div>
+        </div>
+      `).join('') || '<div class="empty-state">لا توجد إشعارات</div>'}
+    </div>
+  `;
+}
+
+async function markNotificationRead(id) {
+  await supabaseClient.from('notifications').update({ is_read: true }).eq('id', id);
+  renderNotifications(); updateNotificationBadges();
+}
+async function markAllNotificationsRead() {
+  await supabaseClient.from('notifications').update({ is_read: true }).eq('is_read', false);
+  renderNotifications(); updateNotificationBadges();
+}
+
+// ---------------------------------------------------------------------------
+// 8) سجل النشاط
+// ---------------------------------------------------------------------------
+async function renderActivity() {
+  content().innerHTML = `<div class="empty-state">جاري التحميل...</div>`;
+  const { data: logs } = await supabaseClient.from('activity_log').select('*').order('created_at', { ascending: false }).limit(100);
+
+  content().innerHTML = `
+    <div class="panel">
+      <div class="table-scroll"><table>
+        <thead><tr><th>الموظف</th><th>العملية</th><th>النوع</th><th>التاريخ</th></tr></thead>
+        <tbody>
+          ${(logs||[]).map(l => `<tr><td>${l.staff_name||'—'}</td><td>${l.action}</td><td>${l.entity_type||''}</td><td>${fmtDate(l.created_at)}</td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--cream-dim)">لا يوجد سجل بعد</td></tr>'}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+
+// ============================================================================
+// المتحكم الرئيسي + التنقل بين الأقسام
+// ============================================================================
+const SECTION_TITLES = {
+  dashboard: 'لوحة الإحصائيات', products: 'المنتجات', orders: 'الطلبات', customers: 'العملاء',
+  branches: 'الفروع', staff: 'الموظفون والصلاحيات', notifications: 'الإشعارات', activity: 'سجل النشاط'
+};
+const SECTION_RENDERERS = {
+  dashboard: renderDashboard, products: renderProducts, orders: renderOrders, customers: renderCustomers,
+  branches: renderBranches, staff: renderStaffSection, notifications: renderNotifications, activity: renderActivity
+};
+
+function switchSection(section) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.section === section));
+  document.getElementById('section-title').textContent = SECTION_TITLES[section];
+  document.getElementById('sidebar').classList.remove('open');
+  SECTION_RENDERERS[section]();
+}
+
+async function updateNotificationBadges() {
+  const { count: unread } = await supabaseClient.from('notifications').select('*', { count: 'exact', head: true }).eq('is_read', false);
+  const { count: pendingOrders } = await supabaseClient.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'pending_payment_review');
+  const notifBadge = document.getElementById('notif-badge');
+  const ordersBadge = document.getElementById('orders-badge');
+  if (unread > 0) { notifBadge.style.display = 'inline-block'; notifBadge.textContent = unread; } else notifBadge.style.display = 'none';
+  if (pendingOrders > 0) { ordersBadge.style.display = 'inline-block'; ordersBadge.textContent = pendingOrders; } else ordersBadge.style.display = 'none';
+}
+
+let REALTIME_SUBSCRIBED = false;
+
+function initAdminApp(staff) {
+  document.getElementById('who-label').textContent = `${staff.full_name} (${staff.role === 'admin' ? 'مدير' : 'موظف'})`;
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.onclick = () => switchSection(el.dataset.section);
+  });
+
+  document.querySelector('.nav-item[data-section="staff"]').style.display = staff.role === 'admin' ? 'flex' : 'none';
+
+  switchSection('dashboard');
+  updateNotificationBadges();
+
+  if (!REALTIME_SUBSCRIBED) {
+    REALTIME_SUBSCRIBED = true;
+    setInterval(updateNotificationBadges, 30000);
+    supabaseClient.channel('orders-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => updateNotificationBadges())
+      .subscribe();
+  }
+}
+
+// ============================================================================
+// بدء التشغيل
+// ============================================================================
+checkExistingSession();
+
+</script>
+</body>
+</html>
